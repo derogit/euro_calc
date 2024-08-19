@@ -31,15 +31,15 @@ let maxHeight = 2000;
 // ];
 
 const plates = [
-    { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", type: "flat", price: 150 },
-    { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", type: "curved", price: 170 },
-    { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", type: "flat", price: 250 },
-    { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", type: "curved", price: 270 },
-    { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", type: "curved", price: 180 },
-    { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", type: "flat", price: 240 },
-    { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", type: "flat", price: 160 },
-    { name: "Plate8", height: 500, isDoubleSided: true, design: "designH", type: "curved", price: 280 },
-  ];
+  { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", type: "flat", price: 150 },
+  { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", type: "curved", price: 170 },
+  { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", type: "flat", price: 250 },
+  { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", type: "curved", price: 270 },
+  { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", type: "curved", price: 180 },
+  { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", type: "flat", price: 240 },
+  { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", type: "flat", price: 160 },
+  { name: "Plate8", height: 500, isDoubleSided: true, design: "designH", type: "curved", price: 280 },
+];
 
 const pillars = [
   { name: "y18", height: 1500, price: 100 },
@@ -379,13 +379,14 @@ function calculateSummary() {
   // Рассчитываем количество столбиков
   let length = sides[currentSide].length;
   let sectionsCount = Math.ceil(length / 2); // количество секций по 2 метра
+  console.log({ sectionsCount });
   let pillarsCount = sectionsCount + 1; // количество столбиков
 
   // Определяем высоту столбиков
   let totalHeight = sides[currentSide].plates.reduce((acc, plate) => acc + plate.height, 0);
   let pillar = totalHeight <= 1500 ? pillars.find((p) => p.height === 1500) : pillars.find((p) => p.height === 2000);
 
-  let pillarsCost = pillarsCount * pillar.price ;
+  let pillarsCost = pillarsCount * pillar.price;
   totalCost += pillarsCost;
 
   $(".step-6__inner").append(`
@@ -400,7 +401,7 @@ function calculateSummary() {
   sides[currentSide].plates.forEach((plate) => {
     // Количество плит, необходимое для покрытия одной стороны
     let platesCount = Math.ceil(length / plate.height);
-    if(sides[currentSide].isDoubleSided) platesCount *= 2;
+    if (sides[currentSide].isDoubleSided) platesCount *= 2;
 
     platesCount *= sectionsCount;
 
@@ -418,7 +419,7 @@ function calculateSummary() {
     totalCost += fenceCover.price * sectionsCount;
 
     $(".step-6__inner").append(`
-        <p>Fence cover (${fenceCover.name}): ${fenceCover.price}</p>
+        <p>Fence cover (${fenceCover.name}): ${sectionsCount} x ${fenceCover.price}</p>
       `);
   }
 
@@ -428,7 +429,7 @@ function calculateSummary() {
     totalCost += platesColor.price * sectionsCount;
 
     $(".step-6__inner").append(`
-        <p>Plates color (${platesColor.name}): ${platesColor.price}</p>
+        <p>Plates color (${platesColor.name}): ${count(sides[currentSide].plates)} x ${platesColor.price}</p>
       `);
   }
 
@@ -438,7 +439,7 @@ function calculateSummary() {
     totalCost += fenceColor.price * sectionsCount;
 
     $(".step-6__inner").append(`
-        <p>Fence color (${fenceColor.name}): ${fenceColor.price}</p>
+        <p>Fence color (${fenceColor.name}): ${sectionsCount} x ${fenceColor.price}</p>
       `);
   }
 
@@ -459,42 +460,40 @@ $("body").on("click", ".js-next-3", function () {
   thridStepValidator();
 });
 
-
-
 $(document).ready(function () {
-    // Создаем контейнер для отладочной информации
-    let debugInfo = $('<div id="debug-info"><h3>Debug Pricing Information</h3></div>');
-  
-    // Добавляем цены для плит (plates)
-    debugInfo.append('<h4>Plates Prices:</h4>');
-    plates.forEach(plate => {
-      debugInfo.append(`<p>${plate.name}: Height ${plate.height}mm, ${plate.isDoubleSided ? 'Double-sided' : 'Single-sided'}, Design: ${plate.design}, Type: ${plate.type} - Price: ${plate.price}</p>`);
-    });
-  
-    // Добавляем цены для столбиков (pillars)
-    debugInfo.append('<h4>Pillars Prices:</h4>');
-    pillars.forEach(pillar => {
-      debugInfo.append(`<p>${pillar.name}: Height ${pillar.height}mm - Price: ${pillar.price}</p>`);
-    });
-  
-    // Добавляем цены для крыш (fenceCovers)
-    debugInfo.append('<h4>Fence Covers Prices:</h4>');
-    fenceCovers.forEach(cover => {
-      debugInfo.append(`<p>${cover.name}: Design: ${cover.design} - Price: ${cover.price}</p>`);
-    });
-  
-    // Добавляем цены для цветов плит (platesColors)
-    debugInfo.append('<h4>Plates Colors Prices:</h4>');
-    platesColors.forEach(color => {
-      debugInfo.append(`<p>${color.name}: Price: ${color.price}</p>`);
-    });
-  
-    // Добавляем цены для цветов забора (fenceColors)
-    debugInfo.append('<h4>Fence Colors Prices:</h4>');
-    fenceColors.forEach(color => {
-      debugInfo.append(`<p>${color.name}: Price: ${color.price}</p>`);
-    });
-  
-    // Вставляем контейнер после блока #calc
-    $('#calc').after(debugInfo);
+  // Создаем контейнер для отладочной информации
+  let debugInfo = $('<div id="debug-info"><h3>Debug Pricing Information</h3></div>');
+
+  // Добавляем цены для плит (plates)
+  debugInfo.append("<h4>Plates Prices:</h4>");
+  plates.forEach((plate) => {
+    debugInfo.append(`<p>${plate.name}: Height ${plate.height}mm, ${plate.isDoubleSided ? "Double-sided" : "Single-sided"}, Design: ${plate.design}, Type: ${plate.type} - Price: ${plate.price}</p>`);
   });
+
+  // Добавляем цены для столбиков (pillars)
+  debugInfo.append("<h4>Pillars Prices:</h4>");
+  pillars.forEach((pillar) => {
+    debugInfo.append(`<p>${pillar.name}: Height ${pillar.height}mm - Price: ${pillar.price}</p>`);
+  });
+
+  // Добавляем цены для крыш (fenceCovers)
+  debugInfo.append("<h4>Fence Covers Prices:</h4>");
+  fenceCovers.forEach((cover) => {
+    debugInfo.append(`<p>${cover.name}: Design: ${cover.design} - Price: ${cover.price}</p>`);
+  });
+
+  // Добавляем цены для цветов плит (platesColors)
+  debugInfo.append("<h4>Plates Colors Prices:</h4>");
+  platesColors.forEach((color) => {
+    debugInfo.append(`<p>${color.name}: Price: ${color.price}</p>`);
+  });
+
+  // Добавляем цены для цветов забора (fenceColors)
+  debugInfo.append("<h4>Fence Colors Prices:</h4>");
+  fenceColors.forEach((color) => {
+    debugInfo.append(`<p>${color.name}: Price: ${color.price}</p>`);
+  });
+
+  // Вставляем контейнер после блока #calc
+  $("#calc").after(debugInfo);
+});

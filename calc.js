@@ -100,12 +100,12 @@ function firstStepValidator(countOfSides) {
       <div class="sided-options">
         <label>
           <input type="radio" name="is-double-sided-${i}" value="false" checked>
-          <img src="/img/1-zijde.png" alt="Single sided" title="1 structured side"><br/>
+          <img src="img/1-zijde.png" alt="Single sided" title="1 structured side"><br/>
           1 structured side
         </label>
         <label>
           <input type="radio" name="is-double-sided-${i}" value="true">
-          <img src="/img/1-zijde-1.png" alt="Double sided" title="2 structured sides"><br/>
+          <img src="img/1-zijde-1.png" alt="Double sided" title="2 structured sides"><br/>
           2 structured sides
         </label>
       </div>

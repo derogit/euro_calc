@@ -1,0 +1,36 @@
+#calc,
+#debug-info {
+  max-width: 900px;
+  margin: 100px auto 50px;
+  border: 1px solid;
+  padding: 20px;
+}
+#debug-info{
+    margin-top: 50px;
+}
+.step {
+  display: none;
+}
+.step.current {
+  display: block;
+}
+.calc-header {
+  display: flex;
+  gap: 10px;
+}
+.sided-options {
+  display: flex;
+  gap: 50px;
+}
+.sided-options img {
+  width: 150px;
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+.sided-options input {
+  visibility: hidden;
+}
+.sided-options input:checked + img {
+  border: 1px solid green;
+  border-radius: 5px;
+}

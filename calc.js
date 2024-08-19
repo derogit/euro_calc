@@ -378,14 +378,14 @@ function calculateSummary() {
 
   // Рассчитываем количество столбиков
   let length = sides[currentSide].length;
-  let sections = Math.ceil(length / 2); // количество секций по 2 метра
-  let pillarsCount = sections + 1; // количество столбиков
+  let sectionsCount = Math.ceil(length / 2); // количество секций по 2 метра
+  let pillarsCount = sectionsCount + 1; // количество столбиков
 
   // Определяем высоту столбиков
   let totalHeight = sides[currentSide].plates.reduce((acc, plate) => acc + plate.height, 0);
   let pillar = totalHeight <= 1500 ? pillars.find((p) => p.height === 1500) : pillars.find((p) => p.height === 2000);
 
-  let pillarsCost = pillarsCount * pillar.price;
+  let pillarsCost = pillarsCount * pillar.price ;
   totalCost += pillarsCost;
 
   $(".step-6__inner").append(`
@@ -402,6 +402,8 @@ function calculateSummary() {
     let platesCount = Math.ceil(length / plate.height);
     if(sides[currentSide].isDoubleSided) platesCount *= 2;
 
+    platesCount *= sectionsCount;
+
     let platesCost = platesCount * plate.price;
     totalCost += platesCost;
 
@@ -413,7 +415,7 @@ function calculateSummary() {
   // Рассчитываем стоимость крыши, если есть
   if (sides[currentSide].fence && sides[currentSide].fence !== "none") {
     let fenceCover = fenceCovers.find((c) => c.name === sides[currentSide].fence);
-    totalCost += fenceCover.price;
+    totalCost += fenceCover.price * sectionsCount;
 
     $(".step-6__inner").append(`
         <p>Fence cover (${fenceCover.name}): ${fenceCover.price}</p>
@@ -423,7 +425,7 @@ function calculateSummary() {
   // Рассчитываем стоимость покраски плит, если выбрано
   if (sides[currentSide].platesColor && sides[currentSide].platesColor !== "neutral") {
     let platesColor = platesColors.find((c) => c.name === sides[currentSide].platesColor);
-    totalCost += platesColor.price;
+    totalCost += platesColor.price * sectionsCount;
 
     $(".step-6__inner").append(`
         <p>Plates color (${platesColor.name}): ${platesColor.price}</p>
@@ -433,7 +435,7 @@ function calculateSummary() {
   // Рассчитываем стоимость покраски забора, если выбрано
   if (sides[currentSide].fenceColor && sides[currentSide].fenceColor !== "neutral") {
     let fenceColor = fenceColors.find((c) => c.name === sides[currentSide].fenceColor);
-    totalCost += fenceColor.price;
+    totalCost += fenceColor.price * sectionsCount;
 
     $(".step-6__inner").append(`
         <p>Fence color (${fenceColor.name}): ${fenceColor.price}</p>

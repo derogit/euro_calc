@@ -89,7 +89,7 @@ function firstStepValidator(countOfSides) {
   $(".step-2__inner").append(`
     <div class="side-general side-${i}" data-side="${i}">
       <h3>Side ${i + 1}</h3>
-      <strong>Total length of side:</strong> 
+      <strong>Total length of side, m:</strong> 
       <input type="text" placeholder="side ${i + 1} length" name="side-length-${i}" value="2">
       <small>Only enter an EVEN NUMBER, please. The plates are always 2m long.<br/>
       If necessary, can be shortened on-site with a diamond grinding wheel</small>
@@ -142,23 +142,46 @@ function addPlateSelector() {
     .filter((plate) => plate.isDoubleSided === isDoubleSided)
     .map(
       (plate) =>
-        `<option value="${plate.name}" data-height="${plate.height}" data-design="${plate.design}" data-type="${plate.type}" style="background-image: url('path_to_design_images/${plate.design}.jpg');">${plate.name} - ${plate.height}mm - ${plate.design} - ${plate.type}</option>`
+        `<option value="${plate.name}" data-height="${plate.height}" data-design="${plate.design}" data-type="${plate.type}" data-image="/img/b/${plate.image}.png">
+      ${plate.height}mm
+      </option>`
     )
     .join("");
 
   const plateSelectionHTML = `
-          <div class="plate-selection" data-plate="">
-              <select class="plate-select">
-                  <option value="">Select Plate</option>
-                  ${plateOptions}
-              </select>
-              <button class="js-remove-plate">Remove</button>
-          </div>
-      `;
+    <div class="plate-selection" data-plate="">
+      <select class="plate-select" style="width: 100%;">
+        <option value="" disabled selected>+ Add Plate</option>
+        ${plateOptions}
+      </select>
+      <button class="js-remove-plate"><i class="icon-trash"></i></button>
+    </div>
+`;
 
   $(".step-3__inner").prepend(plateSelectionHTML);
 
+  // Инициализация select2 с шаблоном для изображений
+  $(".plate-select").select2({
+    templateResult: formatOptionWithImage,
+    templateSelection: formatOptionWithImage,
+    minimumResultsForSearch: -1, // Отключаем поиск
+  });
+
   updatePlateSelectors();
+}
+
+function formatOptionWithImage(opt) {
+  if (!opt.id) {
+    return opt.text;
+  }
+
+  var imgUrl = $(opt.element).data("image");
+  if (imgUrl) {
+    var $opt = $(`<span><img src="${imgUrl}" style="width: 100%; height: 100%;" /> <span class="opt_text">${opt.text}</span></span>`);
+    return $opt;
+  } else {
+    return opt.text;
+  }
 }
 
 function updatePlateSelectors() {
@@ -203,6 +226,7 @@ function calculatePotentialTotalHeight() {
     if (index == 0) return;
 
     let selectedOption = $(this).find("option:selected");
+    console.log({ selectedOption });
     let plateHeight = parseInt(selectedOption.data("height")) || 0;
 
     totalHeight += plateHeight;
@@ -231,7 +255,7 @@ function recalculateTotalHeight() {
     // Apply background based on design
     let design = selectedOption.data("design");
     if (design) {
-      $(this).css("background-image", `url('path_to_design_images/${design}.jpg')`);
+      // $(this).css("background-image", `url('path_to_design_images/${design}.jpg')`);
     }
   });
 
@@ -240,6 +264,12 @@ function recalculateTotalHeight() {
   // Если выбрана curved плита, не добавляем новый селектор
   if (!hasCurvedPlate && $(".plate-select").first().val() !== "" && totalHeight < maxHeight) {
     addPlateSelector(); // Добавляем новый селектор только если последний уже заполнен
+  } else {
+    $(".plate-select").select2({
+      templateResult: formatOptionWithImage,
+      templateSelection: formatOptionWithImage,
+      minimumResultsForSearch: -1, // Отключаем поиск
+    });
   }
 }
 
@@ -428,7 +458,7 @@ function calculateSummary() {
     totalCost += platesColor.price * sectionsCount;
 
     $(".step-6__inner").append(`
-        <p>Plates color (${platesColor.name}): ${count(sides[currentSide].plates)} x ${platesColor.price}</p>
+        <p>Plates color (${platesColor.name}): ${sides[currentSide].plates.length} x ${platesColor.price}</p>
       `);
   }
 

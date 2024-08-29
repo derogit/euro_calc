@@ -31,14 +31,13 @@ let maxHeight = 2000;
 // ];
 
 const plates = [
-  { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", type: "flat", price: 150 },
-  { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", type: "curved", price: 170 },
-  { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", type: "flat", price: 250 },
-  { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", type: "curved", price: 270 },
-  { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", type: "curved", price: 180 },
-  { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", type: "flat", price: 240 },
-  { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", type: "flat", price: 160 },
-  { name: "Plate8", height: 500, isDoubleSided: true, design: "designH", type: "curved", price: 280 },
+  { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", image: "1", type: "flat", price: 150 },
+  { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", image: "2", type: "curved", price: 170 },
+  { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", image: "3", type: "flat", price: 250 },
+  { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", image: "5", type: "curved", price: 270 },
+  { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", image: "4", type: "curved", price: 180 },
+  { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", image: "6", type: "flat", price: 240 },
+  { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", image: "7", type: "flat", price: 160 },
 ];
 
 const pillars = [
@@ -90,8 +89,8 @@ function firstStepValidator(countOfSides) {
   $(".step-2__inner").append(`
     <div class="side-general side-${i}" data-side="${i}">
       <h3>Side ${i + 1}</h3>
-      Total length of side: 
-      <input type="text" placeholder="side ${i + 1} length" name="side-length-${i}" value="2"><br/>
+      <strong>Total length of side:</strong> 
+      <input type="text" placeholder="side ${i + 1} length" name="side-length-${i}" value="2">
       <small>Only enter an EVEN NUMBER, please. The plates are always 2m long.<br/>
       If necessary, can be shortened on-site with a diamond grinding wheel</small>
       <br/><br/>

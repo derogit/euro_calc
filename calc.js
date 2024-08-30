@@ -81,7 +81,8 @@ function firstStepValidator(countOfSides) {
     alert("Please choose the number of sides");
     return false;
   }
-  for (let i = 0; i < countOfSides; i++) {
+
+  for (let i = currentSide; i < countOfSides; i++) {
     sides[i] = [];
   }
 
@@ -129,7 +130,8 @@ function secondStepValidator() {
   sides[currentSide].length = length;
   sides[currentSide].isDoubleSided = $('input[name="is-double-sided-' + currentSide + '"]:checked').val() == "true";
 
-  addPlateSelector(true); // Добавляем первый селект при переходе на шаг
+  // addPlateSelector(true); // Добавляем первый селект при переходе на шаг
+  recalculateTotalHeight();
   nextStep();
 }
 
@@ -416,83 +418,109 @@ $("body").on("click", ".js-next-5", function () {
 function calculateSummary() {
   let totalCost = 0;
 
-  $(".step-6__inner").html(`
-      <h3>Summary for side ${currentSide + 1}:</h3>
+  // Проверяем, есть ли еще не заполненные стороны
+  if (currentSide + 1 < countOfSides) {
+    currentSide++;
+    current_step = 1; // Возвращаемся к шагу 2 для следующей стороны
+    $(".step-2__inner").html("");
+    $(".step-3__inner").html("");
+    $(".step-4__inner").html("");
+    $(".step-5__inner").html("");
+
+    // recalculateTotalHeight();
+    firstStepValidator(countOfSides);
+
+    // nextStep(); // Возвращаемся к шагу 2
+  } else {
+    // Если все стороны заполнены, переход к итоговому результату или другой завершающей логике
+    $(".step-6__inner").append(`
+        <h3>All sides are filled. Final calculation is done.</h3>
+      `);
+    nextStep();
+  }
+  $(".step-6__inner").html("");
+  sides.forEach((side, i) => {
+    console.log({ side, i });
+    $(".step-6__inner").append(`
+      <h3>Summary for side ${i + 1}:</h3>
     `);
 
-  // Рассчитываем количество столбиков
-  let length = sides[currentSide].length;
-  let sectionsCount = Math.ceil(length / 2); // количество секций по 2 метра
-  console.log({ sectionsCount });
-  let pillarsCount = sectionsCount + 1; // количество столбиков
+    // Рассчитываем количество столбиков
+    let length = sides[i].length;
+    let sectionsCount = Math.ceil(length / 2); // количество секций по 2 метра
+    console.log({ sectionsCount });
+    let pillarsCount = sectionsCount + 1; // количество столбиков
 
-  // Определяем высоту столбиков
-  let totalHeight = sides[currentSide].plates.reduce((acc, plate) => acc + plate.height, 0);
-  let pillar = totalHeight <= 1500 ? pillars.find((p) => p.height === 1500) : pillars.find((p) => p.height === 2000);
+    // Определяем высоту столбиков
+    let totalHeight = sides[i].plates.reduce((acc, plate) => acc + plate.height, 0);
+    let pillar = totalHeight <= 1500 ? pillars.find((p) => p.height === 1500) : pillars.find((p) => p.height === 2000);
 
-  let pillarsCost = pillarsCount * pillar.price;
-  totalCost += pillarsCost;
+    let pillarsCost = pillarsCount * pillar.price;
+    totalCost += pillarsCost;
 
-  $(".step-6__inner").append(`
+    $(".step-6__inner").append(`
       <p>Pillars (${pillar.height}mm): ${pillarsCount} x ${pillar.price} = ${pillarsCost}</p>
     `);
 
-  // Рассчитываем стоимость и детали плит
-  $(".step-6__inner").append(`
+    // Рассчитываем стоимость и детали плит
+    $(".step-6__inner").append(`
       <h4>Plates details:</h4>
     `);
 
-  sides[currentSide].plates.forEach((plate) => {
-    // Количество плит, необходимое для покрытия одной стороны
-    let platesCount = Math.ceil(length / plate.height);
-    if (sides[currentSide].isDoubleSided) platesCount *= 2;
+    sides[i].plates.forEach((plate) => {
+      // Количество плит, необходимое для покрытия одной стороны
+      let platesCount = Math.ceil(length / plate.height);
+      if (sides[i].isDoubleSided) platesCount *= 2;
 
-    platesCount *= sectionsCount;
+      platesCount *= sectionsCount;
 
-    let platesCost = platesCount * plate.price;
-    totalCost += platesCost;
+      let platesCost = platesCount * plate.price;
+      totalCost += platesCost;
 
-    $(".step-6__inner").append(`
+      $(".step-6__inner").append(`
         <p>${plate.name} (${plate.height}mm): ${platesCount} x ${plate.price} = ${platesCost}</p>
       `);
-  });
+    });
 
-  // Рассчитываем стоимость крыши, если есть
-  if (sides[currentSide].fence && sides[currentSide].fence !== "none") {
-    let fenceCover = fenceCovers.find((c) => c.name === sides[currentSide].fence);
-    totalCost += fenceCover.price * sectionsCount;
+    // Рассчитываем стоимость крыши, если есть
+    if (sides[i].fence && sides[i].fence !== "none") {
+      let fenceCover = fenceCovers.find((c) => c.name === sides[i].fence);
+      totalCost += fenceCover.price * sectionsCount;
 
-    $(".step-6__inner").append(`
+      $(".step-6__inner").append(`
         <p>Fence cover (${fenceCover.name}): ${sectionsCount} x ${fenceCover.price}</p>
       `);
-  }
+    }
 
-  // Рассчитываем стоимость покраски плит, если выбрано
-  if (sides[currentSide].platesColor && sides[currentSide].platesColor !== "neutral") {
-    let platesColor = platesColors.find((c) => c.name === sides[currentSide].platesColor);
-    totalCost += platesColor.price * sectionsCount;
+    // Рассчитываем стоимость покраски плит, если выбрано
+    if (sides[i].platesColor && sides[i].platesColor !== "neutral") {
+      let platesColor = platesColors.find((c) => c.name === sides[i].platesColor);
+      totalCost += platesColor.price * sectionsCount;
 
-    $(".step-6__inner").append(`
-        <p>Plates color (${platesColor.name}): ${sides[currentSide].plates.length} x ${platesColor.price}</p>
+      $(".step-6__inner").append(`
+        <p>Plates color (${platesColor.name}): ${sides[i].plates.length} x ${platesColor.price}</p>
       `);
-  }
+    }
 
-  // Рассчитываем стоимость покраски забора, если выбрано
-  if (sides[currentSide].fenceColor && sides[currentSide].fenceColor !== "neutral") {
-    let fenceColor = fenceColors.find((c) => c.name === sides[currentSide].fenceColor);
-    totalCost += fenceColor.price * sectionsCount;
+    // Рассчитываем стоимость покраски забора, если выбрано
+    if (sides[i].fenceColor && sides[i].fenceColor !== "neutral") {
+      let fenceColor = fenceColors.find((c) => c.name === sides[i].fenceColor);
+      totalCost += fenceColor.price * sectionsCount;
 
-    $(".step-6__inner").append(`
+      $(".step-6__inner").append(`
         <p>Fence color (${fenceColor.name}): ${sectionsCount} x ${fenceColor.price}</p>
       `);
-  }
+    }
+
+    $(".step-6__inner").append(`<hr/>`);
+  });
 
   // Добавляем итоговую стоимость
   $(".step-6__inner").append(`
-      <h4>Total cost: ${totalCost}</h4>
+      <h2>Total cost: ${totalCost}</h2>
     `);
 
-  nextStep(6);
+  $(".js-next-6").hide();
 }
 
 $("body").on("click", ".js-next-2", function () {

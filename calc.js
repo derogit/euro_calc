@@ -46,8 +46,8 @@ const pillars = [
 ];
 
 const fenceCovers = [
-  { name: "fenceCover0", design: "design1", img: "/img/cover/1.jpg", price: 100 },
-  { name: "fenceCover1", design: "design2", img: "/img/cover/2.jpg", price: 200 },
+  { name: "fenceCover0", design: "design1", img: "img/cover/1.jpg", price: 100 },
+  { name: "fenceCover1", design: "design2", img: "img/cover/2.jpg", price: 200 },
   { name: "none", design: "none", price: 0 },
 ];
 
@@ -144,7 +144,7 @@ function addPlateSelector() {
     .filter((plate) => plate.isDoubleSided === isDoubleSided)
     .map(
       (plate) =>
-        `<option value="${plate.name}" data-height="${plate.height}" data-design="${plate.design}" data-type="${plate.type}" data-image="/img/b/${plate.image}.png">
+        `<option value="${plate.name}" data-height="${plate.height}" data-design="${plate.design}" data-type="${plate.type}" data-image="img/b/${plate.image}.png">
       ${plate.height}mm
       </option>`
     )

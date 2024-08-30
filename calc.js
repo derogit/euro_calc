@@ -46,8 +46,8 @@ const pillars = [
 ];
 
 const fenceCovers = [
-  { name: "fenceCover0", design: "design1", price: 100 },
-  { name: "fenceCover1", design: "design2", price: 200 },
+  { name: "fenceCover0", design: "design1", img: "/img/cover/1.jpg", price: 100 },
+  { name: "fenceCover1", design: "design2", img: "/img/cover/2.jpg", price: 200 },
   { name: "none", design: "none", price: 0 },
 ];
 
@@ -336,23 +336,31 @@ function thridStepValidator() {
   sides[currentSide].plates = selectedPlates;
 
   nextStep(4); // Переход на шаг 4, если верхняя плита не curved
-
+  // Start by appending the title and the div container for the fence covers
   $(".step-4__inner").append(`
-          <h4>Chose your fence cover:</h4>          
-        `);
+  <h4>Choose your fence cover:</h4>          
+  <div class="step-selects --cover">
+`);
 
+  // Append the fence cover buttons only if hasCurvedPlate is false
   if (!hasCurvedPlate) {
-    fenceCovers.forEach((cover) => {
-      $(".step-4__inner").append(`
-            <button class="choose-fence-cover" data-cover="${cover.name}" > ${cover.name} </button>
-          `);
+    fenceCovers.forEach((cover, index) => {
+      if (cover.name === "none") return;
+      $(".step-selects.--cover").append(`
+      <button class="choose-fence-cover btn-img" data-cover="fenceCover${index}"> 
+        <img src="${cover.img}" />
+      </button>
+    `);
     });
   }
-  if (hasCurvedPlate) {
-    $(".step-4__inner").append(`
-        <button class="choose-fence-cover" data-cover="none" > Without fence cover </button>
-      `);
-  }
+
+  // Always append the "No fence cover" button
+  $(".step-selects.--cover").append(`
+  <button class="choose-fence-cover btn-img --empty" data-cover="none"><span>No fence cover</span></button>
+`);
+
+  // Finally, close the div container
+  $(".step-4__inner").append(`</div>`);
 }
 
 $("body").on("click", ".choose-fence-cover", function () {
@@ -369,7 +377,10 @@ $("body").on("click", ".choose-fence-cover", function () {
   platesColors.forEach((color) => {
     $(".step-5__inner").append(
       `
-        <input type="radio" name="plates_color" class="choose-plates-color" value="${color.name}" ${i === 0 ? "checked" : ""} />${color.name}<br/>
+      <label class="radio-label">
+        <input type="radio" name="plates_color" class="choose-plates-color input-radio" value="${color.name}" ${i === 0 ? "checked" : ""} />
+        <span>${color.name}</span>
+        </label>
       `
     );
     i++;
@@ -377,13 +388,17 @@ $("body").on("click", ".choose-fence-cover", function () {
 
   if (cover !== "none") {
     $(".step-5__inner").append(`
+      <br/><br/>
     <h3>Choose fence color: </h3>
     `);
 
     let i = 0;
     fenceColors.forEach((color) => {
       $(".step-5__inner").append(`
-          <input type="radio" name="fence_color" class="choose-fence-color" value="${color.name}" ${i === 0 ? "checked" : ""} />${color.name}<br/>
+        <label class="radio-label">
+          <input type="radio" name="fence_color" class="choose-fence-color input-radio" value="${color.name}" ${i === 0 ? "checked" : ""} />
+          <span>${color.name}</span>
+          </label>
         `);
       i++;
     });
@@ -438,7 +453,7 @@ function calculateSummary() {
     totalCost += platesCost;
 
     $(".step-6__inner").append(`
-        <p>${plate.name} (${plate.height}mm, ${plate.type}, ${plate.design} design): ${platesCount} x ${plate.price} = ${platesCost}</p>
+        <p>${plate.name} (${plate.height}mm): ${platesCount} x ${plate.price} = ${platesCost}</p>
       `);
   });
 

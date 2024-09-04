@@ -190,12 +190,16 @@ function updatePlateSelectors() {
   $(".plate-select")
     .off("focusin") // Отслеживаем фокус для сохранения предыдущего значения
     .on("focusin", function () {
-      $(this).data("prevValue", $(this).val()); // Сохраняем текущее значение перед изменением
+      
     });
 
   $(".plate-select")
     .off("change")
     .on("change", function () {
+
+      
+
+
       let selectedOption = $(this).find("option:selected");
       let plateHeight = parseInt(selectedOption.data("height")) || 0;
       let isCurved = selectedOption.data("type") === "curved";
@@ -204,9 +208,13 @@ function updatePlateSelectors() {
       // Проверка на выбор curved плиты не для первой позиции
       if (isCurved && !isFirst) {
         alert("Curved plate can only be the top plate.");
-        $(this).val($(this).data("prevValue")); // Восстанавливаем предыдущее значение
+        
+        $(this).val($(this).parent('.plate-selection').data("prevValue")); // Восстанавливаем предыдущее значение
         return; // Выходим из функции, чтобы не продолжать выполнение
       }
+
+      $(this).parent('.plate-selection').data("prevValue", $(this).val()); 
+      console.log($(this).val());
 
       // Предварительный пересчет высоты с учетом новой плиты
       let potentialTotalHeight = calculatePotentialTotalHeight() + plateHeight;
@@ -244,7 +252,13 @@ function recalculateTotalHeight() {
   let hasCurvedPlate = false;
 
   $(".plate-select").each(function () {
+    let plateSelect = $(this);
     let selectedOption = $(this).find("option:selected");
+    if(selectedOption.val() === "") {
+      console.log("Empty plate selected");
+      plateSelect.closest('.plate-selection').remove();
+      return;
+    }
     let plateHeight = parseInt(selectedOption.data("height")) || 0;
     let plateType = selectedOption.data("type");
 
@@ -277,12 +291,13 @@ function recalculateTotalHeight() {
 
 // Event listener to remove a plate selector
 $("body").on("click", ".js-remove-plate", function () {
+  console.log("remove");
   $(this).closest(".plate-selection").remove();
   recalculateTotalHeight(); // Пересчитываем общую высоту после удаления селектора
 
   // Если больше нет селекторов, добавляем пустой
   if ($(".plate-select").length === 0) {
-    addPlateSelector();
+    // addPlateSelector();
   }
 });
 

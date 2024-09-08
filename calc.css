@@ -288,6 +288,7 @@ padding-left: 10px;
   display: block;
   position: relative;
   padding-left: 20px;
+  color:#000;
 }
 .radio-label span:before{
   content: '';
@@ -319,4 +320,29 @@ padding-left: 10px;
 }
 .radio-label input:checked + span:after{
   opacity: 1;
+}
+
+.radio-label.--bg{
+  max-width: 450px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.radio-label.--bg img{
+position: absolute;
+width: 100%;
+height: 100%;
+z-index: -1;
+object-fit: cover;
+opacity: 0.7;
+}
+.radio-label.--bg span{
+  padding-left: 33px;
+}
+.radio-label.--bg span:before{
+  left: 16px
+}
+.radio-label.--bg span:after{
+  left: 16px
 }

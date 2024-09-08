@@ -52,8 +52,9 @@ const fenceCovers = [
 ];
 
 const platesColors = [
-  { name: "neutral", price: 0 },
-  { name: "colored", price: 100 },
+  { name: "neutral", price: 0, img: 'img/platesColors/plate1.jpg' },
+  { name: "yellow", price: 100, img: 'img/platesColors/plate2.jpg' },
+  { name: "green", price: 100, img: 'img/platesColors/plate3.jpg' },
 ];
 
 const fenceColors = [
@@ -92,8 +93,8 @@ function firstStepValidator(countOfSides) {
       <h3>Side ${i + 1}</h3>
       <strong>Total length of side, m:</strong> 
       <input type="text" placeholder="side ${i + 1} length" name="side-length-${i}" value="2">
-      <small>Only enter an EVEN NUMBER, please. The plates are always 2m long.<br/>
-      If necessary, can be shortened on-site with a diamond grinding wheel</small>
+      <small>The length of the plates is always 2 m. <br/>
+Odd values will be rounded upwards</small>
       <br/><br/>
       
       <h4>Choose 1 or 2 side plate design</h4>
@@ -123,8 +124,9 @@ function secondStepValidator() {
   }
   // Check length need to be divided by 2
   if (length % 2 != 0) {
-    alert("Length of the side should be even");
-    return false;
+    length+=1;
+    // alert("Length of the side should be even");
+    // return false;
   }
 
   sides[currentSide].length = length;
@@ -394,9 +396,10 @@ $("body").on("click", ".choose-fence-cover", function () {
   platesColors.forEach((color) => {
     $(".step-5__inner").append(
       `
-      <label class="radio-label">
+      <label class="radio-label --bg">
         <input type="radio" name="plates_color" class="choose-plates-color input-radio" value="${color.name}" ${i === 0 ? "checked" : ""} />
         <span>${color.name}</span>
+        <img src="${color.img}" />
         </label>
       `
     );

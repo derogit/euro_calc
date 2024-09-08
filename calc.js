@@ -52,9 +52,9 @@ const fenceCovers = [
 ];
 
 const platesColors = [
-  { name: "neutral", price: 0, img: 'img/platesColors/plate1.jpg' },
-  { name: "yellow", price: 100, img: 'img/platesColors/plate2.jpg' },
-  { name: "green", price: 100, img: 'img/platesColors/plate3.jpg' },
+  { name: "neutral", price: 0, img: "img/platesColors/plate1.jpg" },
+  { name: "yellow", price: 100, img: "img/platesColors/plate2.jpg" },
+  { name: "green", price: 100, img: "img/platesColors/plate3.jpg" },
 ];
 
 const fenceColors = [
@@ -116,6 +116,47 @@ Odd values will be rounded upwards</small>
   nextStep();
 }
 
+function displayPreviousSidesInfo() {
+  $(".previous-sides-info").remove(); // Очищаємо блок з інформацією, щоб уникнути дублювання
+
+  if (currentSide > 0) {
+    // Виводимо інформацію тільки якщо є попередні сторони
+    let previousInfoHTML = `<div class="previous-sides-info">`;
+
+    for (let i = 0; i < currentSide; i++) {
+      let side = sides[i];
+      previousInfoHTML += `<div class="side-info">
+        <h3>Side ${i + 1}:</h3>
+        <div class="side-details">
+          <div class="plates-visual">`;
+
+          //reverse side.plates
+          let plates = side.plates.reverse();
+      // Відображаємо картинки плит для цієї сторони
+      plates.forEach((plate) => {
+        previousInfoHTML += `
+        <div class="plates-visual__item">
+          <img src="img/b/${plate.image}.png" alt="${plate.name}" title="${plate.name}" style="height:auto;width:300px;margin-right:10px;">
+          <p>${plate.height}mm</p>
+          </div>
+        `;
+      });
+
+      previousInfoHTML += `</div>`;
+
+      // Виводимо загальну висоту для цієї сторони
+      let totalHeight = side.plates.reduce((sum, plate) => sum + plate.height, 0);
+      previousInfoHTML += `<p><strong>Total Height:</strong> ${totalHeight}mm</p>`;
+
+      previousInfoHTML += `</div></div><hr>`;
+    }
+
+    previousInfoHTML += `</div>`;
+
+    // Додаємо інформацію перед блоком вибору плит
+    $(".step-3__prev").append(previousInfoHTML);
+  }
+}
 function secondStepValidator() {
   let length = $('input[name="side-length-' + currentSide + '"]').val();
   if (length == "") {
@@ -124,7 +165,7 @@ function secondStepValidator() {
   }
   // Check length need to be divided by 2
   if (length % 2 != 0) {
-    length+=1;
+    length += 1;
     // alert("Length of the side should be even");
     // return false;
   }
@@ -134,6 +175,9 @@ function secondStepValidator() {
 
   // addPlateSelector(true); // Добавляем первый селект при переходе на шаг
   recalculateTotalHeight();
+  if(currentSide > 0) {
+    displayPreviousSidesInfo()
+  }
   nextStep();
 }
 
@@ -191,17 +235,11 @@ function formatOptionWithImage(opt) {
 function updatePlateSelectors() {
   $(".plate-select")
     .off("focusin") // Отслеживаем фокус для сохранения предыдущего значения
-    .on("focusin", function () {
-      
-    });
+    .on("focusin", function () {});
 
   $(".plate-select")
     .off("change")
     .on("change", function () {
-
-      
-
-
       let selectedOption = $(this).find("option:selected");
       let plateHeight = parseInt(selectedOption.data("height")) || 0;
       let isCurved = selectedOption.data("type") === "curved";
@@ -210,12 +248,12 @@ function updatePlateSelectors() {
       // Проверка на выбор curved плиты не для первой позиции
       if (isCurved && !isFirst) {
         alert("Curved plate can only be the top plate.");
-        
-        $(this).val($(this).parent('.plate-selection').data("prevValue")); // Восстанавливаем предыдущее значение
+
+        $(this).val($(this).parent(".plate-selection").data("prevValue")); // Восстанавливаем предыдущее значение
         return; // Выходим из функции, чтобы не продолжать выполнение
       }
 
-      $(this).parent('.plate-selection').data("prevValue", $(this).val()); 
+      $(this).parent(".plate-selection").data("prevValue", $(this).val());
       console.log($(this).val());
 
       // Предварительный пересчет высоты с учетом новой плиты
@@ -256,9 +294,9 @@ function recalculateTotalHeight() {
   $(".plate-select").each(function () {
     let plateSelect = $(this);
     let selectedOption = $(this).find("option:selected");
-    if(selectedOption.val() === "") {
+    if (selectedOption.val() === "") {
       console.log("Empty plate selected");
-      plateSelect.closest('.plate-selection').remove();
+      plateSelect.closest(".plate-selection").remove();
       return;
     }
     let plateHeight = parseInt(selectedOption.data("height")) || 0;
@@ -312,6 +350,7 @@ $("body").on("click", ".js-choose-count-of-sides", function () {
   countOfSides = $(this).data("side");
   firstStepValidator(countOfSides);
 });
+
 
 function thridStepValidator() {
   let totalHeight = 0;
@@ -409,7 +448,7 @@ $("body").on("click", ".choose-fence-cover", function () {
   if (cover !== "none") {
     $(".step-5__inner").append(`
       <br/><br/>
-    <h3>Choose fence color: </h3>
+    <h3>Choose top cover color: </h3>
     `);
 
     let i = 0;

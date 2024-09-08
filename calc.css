@@ -145,6 +145,14 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+.step__next.--start{
+  justify-content: flex-start;
+}
+.--two-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .step-3__inner {
   max-width: 400px;

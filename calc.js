@@ -32,35 +32,35 @@ let maxHeight = 2000;
 // ];
 
 const plates = [
-  { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", image: "1", type: "flat", price: 150 },
-  { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", image: "2", type: "curved", price: 170 },
-  { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", image: "3", type: "flat", price: 250 },
-  { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", image: "5", type: "curved", price: 270 },
-  { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", image: "4", type: "curved", price: 180 },
-  { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", image: "6", type: "flat", price: 240 },
-  { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", image: "7", type: "flat", price: 160 },
+  { name: "Plate1", height: 250, isDoubleSided: true, design: "designA", image: "1", type: "flat", price: 30 },
+  { name: "Plate2", height: 250, isDoubleSided: false, design: "designB", image: "2", type: "curved", price: 30 },
+  { name: "Plate3", height: 500, isDoubleSided: true, design: "designC", image: "3", type: "flat", price: 60 },
+  { name: "Plate4", height: 500, isDoubleSided: false, design: "designD", image: "5", type: "curved", price: 40 },
+  { name: "Plate5", height: 250, isDoubleSided: true, design: "designE", image: "4", type: "curved", price: 30 },
+  { name: "Plate6", height: 500, isDoubleSided: false, design: "designF", image: "6", type: "flat", price: 40 },
+  { name: "Plate7", height: 250, isDoubleSided: false, design: "designG", image: "7", type: "flat", price: 30 },
 ];
 
 const pillars = [
-  { name: "y18", height: 1500, price: 100 },
-  { name: "y20", height: 2000, price: 200 },
+  { name: "y18", height: 1500, price: 20 },
+  { name: "y20", height: 2000, price: 20 },
 ];
 
 const fenceCovers = [
-  { name: "fenceCover0", design: "design1", img: "img/cover/1.jpg", price: 100 },
-  { name: "fenceCover1", design: "design2", img: "img/cover/2.jpg", price: 200 },
+  { name: "fenceCover0", design: "design1", img: "img/cover/1.jpg", price: 30 },
+  { name: "fenceCover1", design: "design2", img: "img/cover/2.jpg", price: 30 },
   { name: "none", design: "none", price: 0 },
 ];
 
 const platesColors = [
   { name: "neutral", price: 0, img: "img/platesColors/plate1.jpg" },
-  { name: "yellow", price: 100, img: "img/platesColors/plate2.jpg" },
-  { name: "green", price: 100, img: "img/platesColors/plate3.jpg" },
+  { name: "antracite", price: 5, img: "img/platesColors/plate2.jpg" },
+  { name: "white", price: 5, img: "img/platesColors/plate3.jpg" },
 ];
 
 const fenceColors = [
   { name: "neutral", price: 0 },
-  { name: "red", price: 100 },
+  { name: "red", price: 10 },
 ];
 
 function nextStep() {
@@ -253,7 +253,7 @@ function thridStepValidator() {
 function renderStep4() {
   $(".step-4__inner").html("");
   $(".step-4__inner").append(`
-    <h4>Choose your fence cover:</h4>          
+    <h4>Choose your top cover:</h4>          
     <div class="step-selects --cover">
   `);
 
@@ -278,7 +278,7 @@ function renderStep4() {
 
   // Always append the "No fence cover" button
   $(".step-selects.--cover").append(`
-    <button class="choose-fence-cover btn-img --empty" data-cover="none"><span>No fence cover</span></button>
+    <button class="choose-fence-cover btn-img --empty" data-cover="none"><span>No top cover</span></button>
   `);
 
   // Finally, close the div container
@@ -419,7 +419,7 @@ function calculateSummary() {
       totalCost += fenceCover.price * sectionsCount;
 
       $(".step-6__inner").append(`
-        <p>Fence cover (${fenceCover.name}): ${sectionsCount} x ${fenceCover.price}</p>
+        <p>Top cover (${fenceCover.name}): ${sectionsCount} x ${fenceCover.price}</p>
       `);
     }
 
@@ -735,7 +735,7 @@ $(document).ready(function () {
   });
 
   // Добавляем цены для крыш (fenceCovers)
-  debugInfo.append("<h4>Fence Covers Prices:</h4>");
+  debugInfo.append("<h4>Top Covers Prices:</h4>");
   fenceCovers.forEach((cover) => {
     debugInfo.append(`<p>${cover.name}: Design: ${cover.design} - Price: ${cover.price}</p>`);
   });
@@ -747,7 +747,7 @@ $(document).ready(function () {
   });
 
   // Добавляем цены для цветов забора (fenceColors)
-  debugInfo.append("<h4>Fence Colors Prices:</h4>");
+  debugInfo.append("<h4>Top Cover Colors Prices:</h4>");
   fenceColors.forEach((color) => {
     debugInfo.append(`<p>${color.name}: Price: ${color.price}</p>`);
   });

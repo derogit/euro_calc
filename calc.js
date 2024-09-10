@@ -165,7 +165,7 @@ function secondStepValidator() {
   }
   // Check length need to be divided by 2
   if (length % 2 != 0) {
-    length += 1;
+    length = parseInt(length) + 1;
     // alert("Length of the side should be even");
     // return false;
   }
